@@ -44,17 +44,16 @@ function sendMessage() {
                     botMessage.appendChild(textNode);
                 }
                 chatBody.appendChild(botMessage);
-            } else if (resultText.includes(`{"size":`)) {
-                const generatedImageDescription = extractGeneratedImage(resultText);
-                const botMessage = document.createElement('div');
-                botMessage.classList.add('chat-message', 'bot');
-                botMessage.innerHTML = formatText(generatedImageDescription);
-                chatBody.appendChild(botMessage);
             } else if (resultText.includes("```")) {
                 const codeBlock = extractCode(resultText);
                 const botMessage = document.createElement('div');
                 botMessage.classList.add('chat-message', 'bot');
                 botMessage.innerHTML = codeBlock;
+                chatBody.appendChild(botMessage);
+            } else if (resultText.includes('{"size":')) {
+                const botMessage = document.createElement('div');
+                botMessage.classList.add('chat-message', 'bot');
+                botMessage.innerHTML = extractGeneratedImage(resultText);
                 chatBody.appendChild(botMessage);
             } else {
                 const botMessage = document.createElement('div');
@@ -85,14 +84,6 @@ function extractImage(response) {
     return [imageLink, textAfterImage];
 }
 
-function extractGeneratedImage(response) {
-    const startIndex = response.indexOf(`{"size":`);
-    const endIndex = response.indexOf("}", startIndex) + 1;
-    const description = response.slice(startIndex, endIndex);
-    const textAfter = response.slice(endIndex).trim();
-    return `${description}<br>${formatText(textAfter)}`;
-}
-
 function extractCode(response) {
     const codeStart = response.indexOf("```");
     const codeEnd = response.indexOf("```", codeStart + 3);
@@ -103,6 +94,23 @@ function extractCode(response) {
         <div class="code-block">
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
             <pre><code class="${language}">${escapeHtml(code)}</code></pre>
+        </div>
+    `;
+}
+
+function extractGeneratedImage(response) {
+    const jsonStart = response.indexOf("{");
+    const jsonEnd = response.indexOf("}", jsonStart) + 1;
+    const jsonString = response.slice(jsonStart, jsonEnd);
+    const parsedImageDetails = JSON.parse(jsonString);
+
+    const imageText = response.slice(jsonEnd + 1).trim();
+
+    return `
+        <div class="generated-image">
+            <strong>Size:</strong> ${parsedImageDetails.size}<br>
+            <strong>Prompt:</strong> ${parsedImageDetails.prompt}<br>
+            ${imageText ? `<div>${formatText(imageText)}</div>` : ''}
         </div>
     `;
 }
