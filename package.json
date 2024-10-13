@@ -1,0 +1,15 @@
+{
+  "name": "ImongMaMaGPT v1",
+  "version": "1.0.0",
+  "description": "Yo mama assistant.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Carl John Villavito",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
