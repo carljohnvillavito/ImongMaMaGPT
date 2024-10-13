@@ -31,7 +31,7 @@ async function sendMessage() {
     // Make the API request
     try {
         const response = await axios.post('https://free-ai-models.vercel.app/v1/chat/completions', {
-            model: 'gpt-4o-2024-08-06',
+            model: 'gpt-4-turbo',
             messages: [
                 { role: 'system', content: prompt },
                 { role: 'user', content: message }
