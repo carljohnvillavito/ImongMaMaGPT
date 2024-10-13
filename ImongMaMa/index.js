@@ -24,7 +24,6 @@ function sendMessage() {
     axios.get(`https://deku-rest-apis.ooguy.com/api/gpt-4o?q=${encodeURIComponent(prompt)}&uid=100`)
         .then(response => {
             loadingMessage.remove();
-
             const resultText = response.data.result;
 
             if (resultText.includes("[image](")) {
@@ -44,6 +43,12 @@ function sendMessage() {
                     textNode.innerHTML = formatText(textAfterImage);
                     botMessage.appendChild(textNode);
                 }
+                chatBody.appendChild(botMessage);
+            } else if (resultText.includes(`{"size":`)) {
+                const generatedImageDescription = extractGeneratedImage(resultText);
+                const botMessage = document.createElement('div');
+                botMessage.classList.add('chat-message', 'bot');
+                botMessage.innerHTML = formatText(generatedImageDescription);
                 chatBody.appendChild(botMessage);
             } else if (resultText.includes("```")) {
                 const codeBlock = extractCode(resultText);
@@ -76,7 +81,16 @@ function extractImage(response) {
     const imageEnd = response.indexOf(")", imageStart);
     const imageLink = response.slice(imageStart, imageEnd);
     const textAfterImage = response.slice(imageEnd + 1).trim();
+
     return [imageLink, textAfterImage];
+}
+
+function extractGeneratedImage(response) {
+    const startIndex = response.indexOf(`{"size":`);
+    const endIndex = response.indexOf("}", startIndex) + 1;
+    const description = response.slice(startIndex, endIndex);
+    const textAfter = response.slice(endIndex).trim();
+    return `${description}<br>${formatText(textAfter)}`;
 }
 
 function extractCode(response) {
