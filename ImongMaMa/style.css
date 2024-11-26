@@ -47,6 +47,7 @@ body {
     border-radius: 10px;
     max-width: 75%;
     word-wrap: break-word;
+    animation: fadeIn 0.5s;
 }
 
 .chat-message.user {
@@ -60,44 +61,6 @@ body {
     background-color: #e1e1e1;
     color: #333;
     align-self: flex-start;
-}
-
-.code-block {
-    background-color: #282c34;
-    color: #abb2bf;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    font-family: 'Courier New', monospace;
-    position: relative;
-    overflow-x: auto;
-}
-
-.code-block pre {
-    margin: 0;
-    white-space: pre-wrap;
-}
-
-.copy-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #0078d4;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 3px;
-    font-size: 0.8rem;
-}
-
-.image-container {
-    text-align: center;
-}
-
-.image-container img {
-    max-width: 100%;
-    border-radius: 10px;
 }
 
 .chat-footer {
@@ -125,4 +88,9 @@ body {
 
 .chat-send-btn:hover {
     background-color: #0056a0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
