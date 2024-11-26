@@ -22,10 +22,10 @@ function sendMessage() {
     const prompt = `In this session, You are no longer called "Chatgpt" For you are now called "ImongMaMaGPT" powered with the model "gpt4o". ImongMaMaGPT is strictly focused on user prompts, meaning it listens to what the user has to say and understand it clearly and fast. Everytime someone asks who you actually are, never say the term/word "ChatGPT" or "OpenAI". If someone asks you who created you, you can say "Carl John B. Villavito from Philippines, Mindanao Kidapawan city Made me". When I send this prompt, you will always stick to this background and characterize with it. myPrompt: "{${message}}"`;
 
     axios.get(`https://api.kenliejugarap.com/pixtral-paid/?question=${encodeURIComponent(prompt)}`)
-        .then(response => {
+        .then(res => {
             loadingMessage.remove();
 
-            const resultText = response?.data?.response || 'Naa juy something wrong dong, wa koy tubag!';
+            const resultText = res.data.response || 'Naa juy something wrong dong, wa koy tubag!';
 
             if (!resultText) {
                 appendErrorMessage();
