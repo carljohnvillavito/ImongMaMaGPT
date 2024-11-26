@@ -27,10 +27,11 @@ function sendMessage() {
 
             const resultText = res.data.response || 'Naa juy something wrong dong, wa koy tubag!';
 
-            if (!resultText) {
-                appendErrorMessage();
-                return;
-            }
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('chat-message', 'bot');
+            botMessage.textContent = resultText;
+            chatBody.appendChild(botMessage);
+            chatBody.scrollTop = chatBody.scrollHeight;
         })
         .catch(error => {
             console.error('API Error:', error);
@@ -39,122 +40,10 @@ function sendMessage() {
         });
 }
 
-function extractImage(response) {
-    try {
-        const imageStart = response.indexOf("[image](") + 8;
-        const imageEnd = response.indexOf(")", imageStart);
-        const imageLink = response.slice(imageStart, imageEnd);
-        const textAfterImage = response.slice(imageEnd + 1).trim();
-
-        return [imageLink, textAfterImage];
-    } catch (error) {
-        console.error("Error extracting image:", error);
-        return ["", ""];
-    }
-}
-
-function extractCode(response) {
-    try {
-        const codeStart = response.indexOf("```");
-        const codeEnd = response.indexOf("```", codeStart + 3);
-        const language = response.slice(codeStart + 3, response.indexOf("\n", codeStart)).trim();
-        const code = response.slice(response.indexOf("\n", codeStart) + 1, codeEnd);
-
-        return `
-            <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code class="${language}">${escapeHtml(code)}</code></pre>
-            </div>
-        `;
-    } catch (error) {
-        console.error("Error extracting code:", error);
-        return "Code block parsing failed.";
-    }
-}
-
-function extractGeneratedImage(response) {
-    try {
-        const jsonStart = response.indexOf("{");
-        const jsonEnd = response.indexOf("}", jsonStart) + 1;
-        const jsonString = response.slice(jsonStart, jsonEnd);
-        const parsedImageDetails = JSON.parse(jsonString);
-
-        const imageText = response.slice(jsonEnd + 1).trim();
-
-        return `
-            <div class="generated-image">
-                <strong>Size:</strong> ${parsedImageDetails.size}<br>
-                <strong>Prompt:</strong> ${parsedImageDetails.prompt}<br>
-                ${imageText ? `<div>${formatText(imageText)}</div>` : ''}
-            </div>
-        `;
-    } catch (error) {
-        console.error("Error extracting generated image:", error);
-        return "Generated image parsing failed.";
-    }
-}
-
-function appendBotMessage(content, isHTML = false) {
-    const botMessage = document.createElement('div');
-    botMessage.classList.add('chat-message', 'bot');
-    if (isHTML) {
-        botMessage.innerHTML = content;
-    } else {
-        botMessage.textContent = content;
-    }
-    chatBody.appendChild(botMessage);
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-function appendImageMessage(imageLink, textAfterImage) {
-    const botMessage = document.createElement('div');
-    botMessage.classList.add('chat-message', 'bot');
-
-    const imageContainer = document.createElement('div');
-    imageContainer.classList.add('image-container');
-    const imageElement = document.createElement('img');
-    imageElement.src = imageLink;
-    imageContainer.appendChild(imageElement);
-
-    botMessage.appendChild(imageContainer);
-    if (textAfterImage) {
-        const textNode = document.createElement('div');
-        textNode.innerHTML = formatText(textAfterImage);
-        botMessage.appendChild(textNode);
-    }
-    chatBody.appendChild(botMessage);
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
-
 function appendErrorMessage() {
-    const botMessage = document.createElement('div');
-    botMessage.classList.add('chat-message', 'bot');
-    botMessage.textContent = 'Naa juy something wrong dong, wa koy tubag!';
-    chatBody.appendChild(botMessage);
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('chat-message', 'bot');
+    errorMessage.textContent = 'Naa juy something wrong dong, wa koy tubag!';
+    chatBody.appendChild(errorMessage);
     chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-function formatText(text) {
-    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-               .replace(/\*(.*?)\*/g, '<em>$1</em>')
-               .replace(/`(.*?)`/g, '<code>$1</code>');
-}
-
-function escapeHtml(unsafe) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return unsafe.replace(/[&<>"']/g, m => map[m]);
-}
-
-function copyCode(button) {
-    const code = button.nextElementSibling.textContent;
-    navigator.clipboard.writeText(code).then(() => {
-        button.textContent = 'Copied!';
-        setTimeout(() => (button.textContent = 'Copy'), 2000);
-    });
 }
