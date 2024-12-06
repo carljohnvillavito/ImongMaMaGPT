@@ -19,11 +19,11 @@ function sendMessage() {
     chatBody.appendChild(loadingMessage);
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    axios.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(message)}`)
-        .then(res => {
+    axios.get(https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(message)})
+        .then(response => {
             loadingMessage.remove();
 
-            const resultText = res.data.response || 'Naa juy something wrong dong, wa koy tubag!';
+            const resultText = response.data.response || 'Naa juy something wrong dong, wa koy tubag!';
 
             const botMessage = document.createElement('div');
             botMessage.classList.add('chat-message', 'bot');
