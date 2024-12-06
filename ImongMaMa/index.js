@@ -25,7 +25,7 @@ function sendMessage() {
         .then(res => {
             loadingMessage.remove();
 
-            const resultText = res.data.result || 'Naa juy something wrong dong, wa koy tubag!';
+            const resultText = res.data.response || 'Naa juy something wrong dong, wa koy tubag!';
 
             const botMessage = document.createElement('div');
             botMessage.classList.add('chat-message', 'bot');
