@@ -81,11 +81,26 @@ function appendMessage(text, sender) {
 function formatMessage(text) {
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-    // Code blocks
+    // Bullet lists: group consecutive * items
+    text = text.replace(/(^|\n)(\* .+(\n\* .+)+)/g, (match, p1, listBlock) => {
+        const items = listBlock
+            .trim()
+            .split('\n')
+            .map(line => `<li>${line.replace(/^\* /, '')}</li>`)
+            .join('');
+        return `${p1}<ul>${items}</ul>`;
+    });
+
+    // Multiline code blocks: ```lang\n...\n```
     text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+        const safeCode = code
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/ /g, '&nbsp;')
+            .replace(/\n/g, '<br>');
         return `
             <pre class="code-block">
-                <code class="language-${lang || 'plaintext'}">${code.trim()}</code>
+                <code class="language-${lang || 'plaintext'}">${safeCode}</code>
                 <button class="copy-btn" onclick="copyCode(this)">📋</button>
             </pre>
         `;
@@ -94,7 +109,7 @@ function formatMessage(text) {
     // Inline code
     text = text.replace(/`([^`\n]+?)`/g, '<code class="inline-code">$1</code>');
 
-    // Bold / Italic
+    // Bold / italic
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
