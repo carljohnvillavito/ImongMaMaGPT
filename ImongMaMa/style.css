@@ -296,3 +296,43 @@ input:checked + .slider:before {
     font-family: monospace;
     font-size: 0.85rem;
 }
+
+@media screen and (max-width: 600px) {
+    body {
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .chat-container {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .chat-message {
+        max-width: 100%;
+        font-size: 1rem;
+    }
+
+    .chat-input {
+        font-size: 1rem;
+    }
+
+    .chat-send-btn {
+        font-size: 1rem;
+    }
+
+    .chat-body {
+        padding: 10px;
+    }
+
+    .copy-chat-btn {
+        font-size: 1.2rem;
+    }
+
+    .chat-message time {
+        font-size: 0.65rem;
+    }
+}
