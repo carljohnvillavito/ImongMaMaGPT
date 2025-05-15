@@ -2,6 +2,20 @@ const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 const darkModeToggle = document.getElementById('darkModeToggle');
 
+function getOrCreateUID() {
+    let uid = sessionStorage.getItem('uid');
+    if (!uid) {
+        uid = '';
+        for (let i = 0; i < 15; i++) {
+            uid += Math.floor(Math.random() * 10); // Generate 0–9
+        }
+        sessionStorage.setItem('uid', uid);
+    }
+    return uid;
+}
+
+const userUID = getOrCreateUID(); // use this in API requests
+
 function sendMessage() {
     const message = chatInput.value;
     if (message.trim() === '') return;
@@ -17,7 +31,7 @@ function sendMessage() {
     chatBody.appendChild(typing);
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    axios.get(`/api/ask?ask=${encodeURIComponent(message)}`)
+    axios.get(`/api/ask?ask=${encodeURIComponent(message)}&uid=${userUID}`)
         .then(response => {
             typing.remove();
             const fullResponse = response.data.result || 'Naa juy something wrong dong, wa koy tubag!';
