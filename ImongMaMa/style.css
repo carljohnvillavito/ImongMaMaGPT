@@ -351,3 +351,19 @@ input:checked + .slider:before {
         font-size: 0.65rem;
     }
 }
+
+.chat-message.bot {
+    padding-bottom: 30px; /* add more bottom space for time + copy */
+    position: relative;
+}
+
+.chat-message.bot time {
+    bottom: 6px;
+    right: 40px; /* push timestamp left away from copy icon */
+}
+
+.copy-chat-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+}
