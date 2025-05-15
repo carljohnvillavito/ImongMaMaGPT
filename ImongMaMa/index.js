@@ -21,6 +21,7 @@ function sendMessage() {
 
     axios.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(message)}`)
         .then(response => {
+            console.log('API response:', response.data);
             loadingMessage.remove();
 
             const resultText = response.data.response || 'Naa juy something wrong dong, wa koy tubag!';
