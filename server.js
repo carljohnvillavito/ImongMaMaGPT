@@ -17,6 +17,10 @@ app.get('/', (req, res) => {
     res.redirect('/chat');
 });
 
+app.get('', (req, res) => {
+    res.redirect('/chat');
+});
+
 // Serve index.html at /chat
 app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, 'ImongMaMa', 'index.html'));
@@ -28,15 +32,15 @@ app.get('/api/ask', async (req, res) => {
     if (!userMessage) return res.status(400).json({ error: 'Missing "ask" parameter' });
 
     try {
-        const botRes = await axios.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(userMessage)}`);
+        const botRes = await axios.get(`https://api.zetsu.xyz/ai/llama-3-8b?q=${encodeURIComponent(userMessage)}&uid=100`);
         res.json(botRes.data);
     } catch (err) {
         console.error('Proxy error:', err.message);
-        res.status(500).json({ error: 'Failed to fetch from Hiroshi API' });
+        res.status(500).json({ error: 'Failed to fetch from the API' });
     }
 });
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}\nEnjoy!`);
 });
