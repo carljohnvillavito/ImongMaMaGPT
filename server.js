@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +28,6 @@ app.get('/api/ask', async (req, res) => {
     if (!userMessage) return res.status(400).json({ error: 'Missing "ask" parameter' });
 
     try {
-        const axios = await import('axios');
         const botRes = await axios.default.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(userMessage)}`);
         res.json(botRes.data);
     } catch (err) {
