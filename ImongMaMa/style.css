@@ -209,3 +209,27 @@ body.dark-mode .inline-code {
     background: #333;
     color: #ddd;
 }
+
+.copy-chat-btn {
+    background: transparent;
+    border: none;
+    color: #777;
+    font-size: 1rem;
+    cursor: pointer;
+    float: right;
+    margin-left: auto;
+    margin-top: -5px;
+    margin-bottom: 5px;
+}
+
+.copy-chat-btn:hover {
+    color: #000;
+}
+
+body.dark-mode .copy-chat-btn {
+    color: #ccc;
+}
+
+body.dark-mode .copy-chat-btn:hover {
+    color: #fff;
+}
