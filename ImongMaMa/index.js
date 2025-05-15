@@ -84,13 +84,27 @@ function appendMessage(text, sender) {
     messageDiv.classList.add('chat-message', sender);
 
     const content = document.createElement('div');
-    content.innerHTML = formatMessage(text); // Convert markdown/code to HTML
+    content.innerHTML = formatMessage(text);
 
     const timestamp = document.createElement('time');
     const now = new Date();
     timestamp.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     messageDiv.appendChild(content);
+
+    if (sender === 'bot') {
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-chat-btn';
+        copyBtn.innerHTML = '📋';
+        copyBtn.onclick = () => {
+            navigator.clipboard.writeText(content.innerText).then(() => {
+                copyBtn.textContent = '✅';
+                setTimeout(() => copyBtn.textContent = '📋', 1000);
+            });
+        };
+        messageDiv.appendChild(copyBtn);
+    }
+
     messageDiv.appendChild(timestamp);
     chatBody.appendChild(messageDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
