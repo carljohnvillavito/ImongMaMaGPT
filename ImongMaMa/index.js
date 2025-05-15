@@ -12,7 +12,7 @@ function sendMessage() {
 
     const typing = document.createElement('div');
     typing.className = 'typing-indicator bot';
-    typing.textContent = 'ImongMamaGPT is typing...';
+    typing.textContent = 'Pag huwat dong ha, badjakan taka ron...';
     typing.id = 'typing';
     chatBody.appendChild(typing);
     chatBody.scrollTop = chatBody.scrollHeight;
