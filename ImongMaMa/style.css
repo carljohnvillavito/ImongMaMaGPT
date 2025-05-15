@@ -196,3 +196,16 @@ body.dark-mode .code-block {
 .copy-btn:hover {
     color: #000;
 }
+
+.inline-code {
+    font-family: monospace;
+    background: #eee;
+    padding: 2px 5px;
+    border-radius: 4px;
+    color: #333;
+}
+
+body.dark-mode .inline-code {
+    background: #333;
+    color: #ddd;
+}
