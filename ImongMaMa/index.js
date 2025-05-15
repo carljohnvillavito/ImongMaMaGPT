@@ -2,7 +2,7 @@ const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 
 function chunkAndDisplay(text, sender) {
-    const maxChunkLength = 1000;
+    const maxChunkLength = 999999999;
     const chunks = [];
 
     for (let i = 0; i < text.length; i += maxChunkLength) {
