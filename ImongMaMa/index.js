@@ -20,10 +20,11 @@ function sendMessage() {
 
     appendMessage(message, 'user');
     chatInput.value = '';
+    chatInput.disabled = true;
 
     const typing = document.createElement('div');
     typing.className = 'typing-indicator bot';
-    typing.textContent = 'Paghuwat mag reply nako...';
+    typing.textContent = 'ImongMamaGPT is typing...';
     typing.id = 'typing';
     chatBody.appendChild(typing);
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -32,11 +33,15 @@ function sendMessage() {
         .then(response => {
             typing.remove();
             const fullResponse = response.data.result || 'Naa juy something wrong dong, wa koy tubag!';
-            chunkAndDisplay(fullResponse, 'bot');
+            appendMessage(fullResponse, 'bot');
         })
         .catch(error => {
             typing.remove();
             appendErrorMessage();
+        })
+        .finally(() => {
+            chatInput.disabled = false;
+            chatInput.focus();
         });
 }
 
