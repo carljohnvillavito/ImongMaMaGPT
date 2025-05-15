@@ -28,7 +28,7 @@ app.get('/api/ask', async (req, res) => {
     if (!userMessage) return res.status(400).json({ error: 'Missing "ask" parameter' });
 
     try {
-        const botRes = await axios.default.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(userMessage)}`);
+        const botRes = await axios.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(userMessage)}`);
         res.json(botRes.data);
     } catch (err) {
         console.error('Proxy error:', err.message);
