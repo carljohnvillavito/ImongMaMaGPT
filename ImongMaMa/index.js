@@ -24,7 +24,7 @@ function sendMessage() {
             console.log('API response:', response.data);
             loadingMessage.remove();
 
-            const resultText = response.data.response || 'Naa juy something wrong dong, wa koy tubag!';
+            const resultText = response.data.result || 'Naa juy something wrong dong, wa koy tubag!';
 
             const botMessage = document.createElement('div');
             botMessage.classList.add('chat-message', 'bot');
