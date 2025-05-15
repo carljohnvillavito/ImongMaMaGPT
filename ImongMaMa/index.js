@@ -30,15 +30,48 @@ function sendMessage() {
         });
 }
 
+function copyCode(button) {
+    const code = button.previousElementSibling.innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        button.textContent = '✅';
+        setTimeout(() => button.textContent = '📋', 1000);
+    });
+}
+
+function formatMessage(text) {
+    // Escape HTML
+    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Bold (**text**)
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Italic (*text*)
+    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Code blocks: ```lang\ncode\n```
+    text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+        const highlighted = `<pre class="code-block"><code class="language-${lang || 'plaintext'}">${code.trim()}</code><button class="copy-btn" onclick="copyCode(this)">📋</button></pre>`;
+        return highlighted;
+    });
+
+    // Line breaks
+    text = text.replace(/\n/g, '<br>');
+
+    return text;
+}
+
 function appendMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('chat-message', sender);
+
+    const content = document.createElement('div');
+    content.innerHTML = formatMessage(text); // Convert markdown/code to HTML
 
     const timestamp = document.createElement('time');
     const now = new Date();
     timestamp.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    messageDiv.textContent = text;
+    messageDiv.appendChild(content);
     messageDiv.appendChild(timestamp);
     chatBody.appendChild(messageDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
