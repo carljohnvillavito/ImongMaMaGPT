@@ -1,18 +1,6 @@
 const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
-
-function chunkAndDisplay(text, sender) {
-    const maxChunkLength = 999999999;
-    const chunks = [];
-
-    for (let i = 0; i < text.length; i += maxChunkLength) {
-        chunks.push(text.slice(i, i + maxChunkLength));
-    }
-
-    chunks.forEach((chunk, i) => {
-        setTimeout(() => appendMessage(chunk, sender), i * 200);
-    });
-}
+const darkModeToggle = document.getElementById('darkModeToggle');
 
 function sendMessage() {
     const message = chatInput.value;
@@ -24,7 +12,7 @@ function sendMessage() {
 
     const typing = document.createElement('div');
     typing.className = 'typing-indicator bot';
-    typing.textContent = 'ImongMamaGPT is typing...';
+    typing.textContent = 'Mag reply na ang kupal...';
     typing.id = 'typing';
     chatBody.appendChild(typing);
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -45,40 +33,6 @@ function sendMessage() {
         });
 }
 
-function copyCode(button) {
-    const code = button.previousElementSibling.innerText;
-    navigator.clipboard.writeText(code).then(() => {
-        button.textContent = '✅';
-        setTimeout(() => button.textContent = '📋', 1000);
-    });
-}
-
-function formatMessage(text) {
-    // Escape HTML first
-    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-    // Handle multiline code blocks: ```lang\ncode\n```
-    text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-        return `
-            <pre class="code-block">
-                <code class="language-${lang || 'plaintext'}">${code.trim()}</code>
-                <button class="copy-btn" onclick="copyCode(this)">📋</button>
-            </pre>
-        `;
-    });
-
-    // Handle inline code: `code`
-    text = text.replace(/`([^`\n]+?)`/g, '<code class="inline-code">$1</code>');
-
-    // Bold and italic
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-    // Newlines to <br>
-    text = text.replace(/\n/g, '<br>');
-
-    return text;
-}
 function appendMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('chat-message', sender);
@@ -110,16 +64,39 @@ function appendMessage(text, sender) {
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-// Dark mode toggle
-document.getElementById('toggleMode').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    const modeBtn = document.getElementById('toggleMode');
-    modeBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light' : 'Dark';
-});
+function formatMessage(text) {
+    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-document.getElementById('darkModeToggle').addEventListener('change', function () {
-    document.body.classList.toggle('dark-mode', this.checked);
-});
+    // Code blocks
+    text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+        return `
+            <pre class="code-block">
+                <code class="language-${lang || 'plaintext'}">${code.trim()}</code>
+                <button class="copy-btn" onclick="copyCode(this)">📋</button>
+            </pre>
+        `;
+    });
+
+    // Inline code
+    text = text.replace(/`([^`\n]+?)`/g, '<code class="inline-code">$1</code>');
+
+    // Bold / Italic
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Line breaks
+    text = text.replace(/\n/g, '<br>');
+
+    return text;
+}
+
+function copyCode(button) {
+    const code = button.previousElementSibling.innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        button.textContent = '✅';
+        setTimeout(() => button.textContent = '📋', 1000);
+    });
+}
 
 function appendErrorMessage() {
     const errorMessage = document.createElement('div');
@@ -128,3 +105,8 @@ function appendErrorMessage() {
     chatBody.appendChild(errorMessage);
     chatBody.scrollTop = chatBody.scrollHeight;
 }
+
+// Final working dark mode toggle
+darkModeToggle.addEventListener('change', function () {
+    document.body.classList.toggle('dark-mode', this.checked);
+});
