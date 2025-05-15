@@ -117,6 +117,10 @@ document.getElementById('toggleMode').addEventListener('click', () => {
     modeBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light' : 'Dark';
 });
 
+document.getElementById('darkModeToggle').addEventListener('change', function () {
+    document.body.classList.toggle('dark-mode', this.checked);
+});
+
 function appendErrorMessage() {
     const errorMessage = document.createElement('div');
     errorMessage.classList.add('chat-message', 'bot');
