@@ -19,7 +19,7 @@ function sendMessage() {
     chatBody.appendChild(loadingMessage);
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    axios.get(`https://hiroshi-api.onrender.com/ai/cohere?ask=${encodeURIComponent(message)}`)
+    axios.get(`/api/ask?ask=${encodeURIComponent(message)}`)
         .then(response => {
             console.log('API response:', response.data);
             loadingMessage.remove();
