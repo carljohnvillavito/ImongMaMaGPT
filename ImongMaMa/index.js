@@ -1,18 +1,29 @@
 const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 
+function chunkAndDisplay(text, sender) {
+    const maxChunkLength = 1000;
+    const chunks = [];
+
+    for (let i = 0; i < text.length; i += maxChunkLength) {
+        chunks.push(text.slice(i, i + maxChunkLength));
+    }
+
+    chunks.forEach((chunk, i) => {
+        setTimeout(() => appendMessage(chunk, sender), i * 200);
+    });
+}
+
 function sendMessage() {
     const message = chatInput.value;
     if (message.trim() === '') return;
 
     appendMessage(message, 'user');
-
     chatInput.value = '';
-    chatBody.scrollTop = chatBody.scrollHeight;
 
     const typing = document.createElement('div');
     typing.className = 'typing-indicator bot';
-    typing.textContent = 'Pag huwat dong ha, badjakan taka ron...';
+    typing.textContent = 'Paghuwat mag reply nako...';
     typing.id = 'typing';
     chatBody.appendChild(typing);
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -20,11 +31,10 @@ function sendMessage() {
     axios.get(`/api/ask?ask=${encodeURIComponent(message)}`)
         .then(response => {
             typing.remove();
-            const resultText = response.data.result || 'Naa juy something wrong dong, wa koy tubag!';
-            appendMessage(resultText, 'bot');
+            const fullResponse = response.data.result || 'Naa juy something wrong dong, wa koy tubag!';
+            chunkAndDisplay(fullResponse, 'bot');
         })
         .catch(error => {
-            console.error('API Error:', error);
             typing.remove();
             appendErrorMessage();
         });
@@ -39,27 +49,31 @@ function copyCode(button) {
 }
 
 function formatMessage(text) {
-    // Escape HTML
+    // Escape HTML first
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-    // Bold (**text**)
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-    // Italic (*text*)
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-    // Code blocks: ```lang\ncode\n```
+    // Handle multiline code blocks: ```lang\ncode\n```
     text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-        const highlighted = `<pre class="code-block"><code class="language-${lang || 'plaintext'}">${code.trim()}</code><button class="copy-btn" onclick="copyCode(this)">📋</button></pre>`;
-        return highlighted;
+        return `
+            <pre class="code-block">
+                <code class="language-${lang || 'plaintext'}">${code.trim()}</code>
+                <button class="copy-btn" onclick="copyCode(this)">📋</button>
+            </pre>
+        `;
     });
 
-    // Line breaks
+    // Handle inline code: `code`
+    text = text.replace(/`([^`\n]+?)`/g, '<code class="inline-code">$1</code>');
+
+    // Bold and italic
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Newlines to <br>
     text = text.replace(/\n/g, '<br>');
 
     return text;
 }
-
 function appendMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('chat-message', sender);
