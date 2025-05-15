@@ -32,6 +32,7 @@ body {
     text-align: center;
     font-size: 1.2rem;
     font-weight: bold;
+    position: relative;
 }
 
 .chat-body {
@@ -44,10 +45,12 @@ body {
 .chat-message {
     margin-bottom: 10px;
     padding: 10px;
+    padding-bottom: 20px;
     border-radius: 10px;
     max-width: 75%;
     word-wrap: break-word;
     animation: fadeIn 0.5s;
+    position: relative;
 }
 
 .chat-message.user {
@@ -55,12 +58,33 @@ body {
     color: white;
     align-self: flex-end;
     margin-left: auto;
+    text-align: right;
 }
 
 .chat-message.bot {
     background-color: #e1e1e1;
     color: #333;
     align-self: flex-start;
+    margin-right: auto;
+    text-align: left;
+}
+
+.chat-message time {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    position: absolute;
+    bottom: 5px;
+}
+
+.chat-message.user time {
+    left: 10px;
+    text-align: left;
+}
+
+.chat-message.bot time {
+    right: 10px;
+    text-align: right;
 }
 
 .chat-footer {
@@ -93,15 +117,6 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
-}
-
-/* Timestamp styling */
-.chat-message time {
-    display: block;
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 5px;
-    text-align: right;
 }
 
 /* Typing indicator */
