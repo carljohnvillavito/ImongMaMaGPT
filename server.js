@@ -32,7 +32,12 @@ app.get('/api/ask', async (req, res) => {
     if (!userMessage) return res.status(400).json({ error: 'Missing "ask" parameter' });
 
     try {
-        const botRes = await axios.get(`https://api.zetsu.xyz/ai/llama-3-8b?q=${encodeURIComponent(userMessage)}&uid=100`);
+        const botRes = await axios.get(`https://api.zetsu.xyz/ai/llama-3-8b`, {
+    params: {
+        q: userMessage,
+        uid: 100
+    }
+});
         res.json(botRes.data);
     } catch (err) {
         console.error('Proxy error:', err.message);
