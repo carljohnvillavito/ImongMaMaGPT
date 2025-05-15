@@ -280,3 +280,19 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(21px);
 }
+
+.chat-message ul {
+    padding-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.chat-message ul li {
+    list-style-type: disc;
+    margin-left: 10px;
+}
+
+.code-block code {
+    font-family: monospace;
+    font-size: 0.85rem;
+}
