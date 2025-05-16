@@ -367,3 +367,11 @@ input:checked + .slider:before {
     top: 6px;
     right: 6px;
 }
+
+#imagePreview {
+    text-align: left;
+}
+#imagePreview img {
+    border: 1px solid #ccc;
+    padding: 3px;
+}
