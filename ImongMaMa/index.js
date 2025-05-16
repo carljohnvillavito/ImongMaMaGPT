@@ -1,20 +1,26 @@
 const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 const darkModeToggle = document.getElementById('darkModeToggle');
-const imageUpload = document.getElementById('imageUpload');
-const imagePreview = document.getElementById('imagePreview');
-let uploadedImageBase64 = '';
+const modelSelect = document.getElementById('modelSelect');
 
-imageUpload.addEventListener('change', function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            uploadedImageBase64 = e.target.result;
-            imagePreview.innerHTML = `<img src="${uploadedImageBase64}" style="max-width: 100px; max-height: 100px; border-radius: 5px;" alt="Uploaded Image Preview">`;
-        };
-        reader.readAsDataURL(file);
-    }
+const availableModels = [
+    "gemma2-9b-it",
+    "compound-beta-mini",
+    "compound-beta",
+    "llama-guard-3-8b",
+    "llama-3.1-8b-instant",
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+    "mistral-saba-24b",
+    "meta-llama/llama-4-maverick-17b-128e-instruct",
+    "deepseek-r1-distill-llama-70b"
+];
+
+// Populate model dropdown
+availableModels.forEach(model => {
+    const option = document.createElement('option');
+    option.value = model;
+    option.textContent = model;
+    modelSelect.appendChild(option);
 });
 
 function getOrCreateUID() {
@@ -22,18 +28,24 @@ function getOrCreateUID() {
     if (!uid) {
         uid = '';
         for (let i = 0; i < 15; i++) {
-            uid += Math.floor(Math.random() * 10); // Generate 0–9
+            uid += Math.floor(Math.random() * 10);
         }
         sessionStorage.setItem('uid', uid);
     }
     return uid;
 }
 
-const userUID = getOrCreateUID(); // use this in API requests
+const userUID = getOrCreateUID();
 
 function sendMessage() {
-    const message = chatInput.value;
-    if (message.trim() === '') return;
+    const message = chatInput.value.trim();
+    const selectedModel = modelSelect.value;
+
+    if (!message) return;
+    if (!selectedModel || selectedModel === "Select Model") {
+        alert("Please select a model first.");
+        return;
+    }
 
     appendMessage(message, 'user');
     chatInput.value = '';
@@ -48,20 +60,24 @@ function sendMessage() {
 
     const systemPrompt = "You are Imongmamagpt pre-trained by Carl John Villavito, an MIST Student lives in Kidapawan City. My model is Claude 3.7 Sonnet.";
 
-axios.post('/api/ask', {
-    prompt: message,
-    uid: userUID,
-    img: uploadedImageBase64 || null,
-    system: systemPrompt
-})
-.then(response => {
-    typing.remove();
-    const fullResponse = response.data.reply || 'Naa juy something wrong dong, wa koy tubag!';
-    appendMessage(fullResponse, 'bot');
-    uploadedImageBase64 = '';
-    imageUpload.value = '';
-    imagePreview.innerHTML = '';
-})
+    const url = `https://api.zetsu.xyz/api/groq?prompt=${encodeURIComponent(message)}&uid=${userUID}&model=${encodeURIComponent(selectedModel)}`;
+
+    axios.get(url)
+        .then(response => {
+            typing.remove();
+            let reply = response.data.message || 'Wa koy tubag.';
+            reply = reply.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+            appendMessage(reply, 'bot');
+        })
+        .catch(error => {
+            typing.remove();
+            console.error('API Error:', error);
+            appendErrorMessage();
+        })
+        .finally(() => {
+            chatInput.disabled = false;
+            chatInput.focus();
+        });
 }
 
 function appendMessage(text, sender) {
@@ -98,7 +114,6 @@ function appendMessage(text, sender) {
 function formatMessage(text) {
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-    // Bullet lists: group consecutive * items
     text = text.replace(/(^|\n)(\* .+(\n\* .+)+)/g, (match, p1, listBlock) => {
         const items = listBlock
             .trim()
@@ -108,7 +123,6 @@ function formatMessage(text) {
         return `${p1}<ul>${items}</ul>`;
     });
 
-    // Multiline code blocks: ```lang\n...\n```
     text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
         const safeCode = code
             .replace(/</g, '&lt;')
@@ -123,14 +137,9 @@ function formatMessage(text) {
         `;
     });
 
-    // Inline code
     text = text.replace(/`([^`\n]+?)`/g, '<code class="inline-code">$1</code>');
-
-    // Bold / italic
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-    // Line breaks
     text = text.replace(/\n/g, '<br>');
 
     return text;
@@ -152,7 +161,6 @@ function appendErrorMessage() {
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-// Final working dark mode toggle
 darkModeToggle.addEventListener('change', function () {
     document.body.classList.toggle('dark-mode', this.checked);
 });
