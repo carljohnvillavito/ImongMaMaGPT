@@ -46,20 +46,22 @@ function sendMessage() {
     chatBody.appendChild(typing);
     chatBody.scrollTop = chatBody.scrollHeight;
 
-    axios.get(`/api/ask?ask=${encodeURIComponent(message)}&uid=${userUID}`)
-        .then(response => {
-            typing.remove();
-            const fullResponse = response.data.result || 'Naa juy something wrong dong, wa koy tubag!';
-            appendMessage(fullResponse, 'bot');
-        })
-        .catch(error => {
-            typing.remove();
-            appendErrorMessage();
-        })
-        .finally(() => {
-            chatInput.disabled = false;
-            chatInput.focus();
-        });
+    const systemPrompt = "You are Imongmamagpt pre-trained by Carl John Villavito, an MIST Student lives in Kidapawan City. My model is Claude 3.7 Sonnet.";
+
+axios.post('/api/ask', {
+    prompt: message,
+    uid: userUID,
+    img: uploadedImageBase64 || null,
+    system: systemPrompt
+})
+.then(response => {
+    typing.remove();
+    const fullResponse = response.data.reply || 'Naa juy something wrong dong, wa koy tubag!';
+    appendMessage(fullResponse, 'bot');
+    uploadedImageBase64 = '';
+    imageUpload.value = '';
+    imagePreview.innerHTML = '';
+})
 }
 
 function appendMessage(text, sender) {
