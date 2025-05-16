@@ -27,24 +27,28 @@ app.get('/chat', (req, res) => {
 });
 
 // Example proxy route to bypass CORS for bot API
-app.get('/api/ask', async (req, res) => {
-    const userMessage = req.query.ask;
-    if (!userMessage) return res.status(400).json({ error: 'Missing "ask" parameter' });
+app.use(express.json({ limit: '10mb' })); // Allow base64 image payloads
+
+app.post('/api/ask', async (req, res) => {
+    const { prompt, uid, img, system } = req.body;
+    if (!prompt || !uid || !system) {
+        return res.status(400).json({ error: 'Missing required fields.' });
+    }
 
     try {
-        const botRes = await axios.get(`https://api.zetsu.xyz/ai/llama-3-8b`, {
-    params: {
-        q: userMessage,
-        uid: 100
-    }
-});
-        res.json(botRes.data);
+        const response = await axios.post('https://zaikyoov3-up.up.railway.app/api/anthropic-claude-3-7-sonnet', {
+            prompt,
+            uid,
+            img,
+            system
+        });
+
+        res.json({ reply: response.data.reply });
     } catch (err) {
         console.error('Proxy error:', err.message);
-        res.status(500).json({ error: 'Failed to fetch from the API' });
+        res.status(500).json({ error: 'Proxy failed to reach Claude API.' });
     }
 });
-
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}\nEnjoy!`);
