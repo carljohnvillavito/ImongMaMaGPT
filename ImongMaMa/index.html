@@ -20,9 +20,10 @@
         <div class="chat-body" id="chatBody">
             <div class="chat-message bot">Kamusta black 🥷! I'm your public imongmamagpt assistant ready to answer your nonsense questions!</div>
         </div>
-        <input type="file" id="imageUpload" accept="image/*" style="margin-bottom: 10px;">
-<div id="imagePreview" style="margin-bottom: 10px;"></div>
         <div class="chat-footer">
+            <select id="modelSelect" class="form-select" style="margin-bottom: 10px;">
+    <option disabled selected>Select Model</option>
+            </select>
             <input type="text" class="chat-input" id="chatInput" placeholder="Type a message...">
             <button class="chat-send-btn btn btn-primary" onclick="sendMessage()">Send</button>
         </div>
