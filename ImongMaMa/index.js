@@ -1,6 +1,9 @@
 const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 const darkModeToggle = document.getElementById('darkModeToggle');
+const imageUpload = document.getElementById('imageUpload');
+const imagePreview = document.getElementById('imagePreview');
+let uploadedImageBase64 = '';
 
 function getOrCreateUID() {
     let uid = sessionStorage.getItem('uid');
