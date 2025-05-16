@@ -5,6 +5,18 @@ const imageUpload = document.getElementById('imageUpload');
 const imagePreview = document.getElementById('imagePreview');
 let uploadedImageBase64 = '';
 
+imageUpload.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            uploadedImageBase64 = e.target.result;
+            imagePreview.innerHTML = `<img src="${uploadedImageBase64}" style="max-width: 100px; max-height: 100px; border-radius: 5px;" alt="Uploaded Image Preview">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
 function getOrCreateUID() {
     let uid = sessionStorage.getItem('uid');
     if (!uid) {
