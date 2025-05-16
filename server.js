@@ -31,17 +31,27 @@ app.use(express.json({ limit: '10mb' })); // Allow base64 image payloads
 
 app.post('/api/ask', async (req, res) => {
     const { prompt, uid, img, system } = req.body;
+
     if (!prompt || !uid || !system) {
         return res.status(400).json({ error: 'Missing required fields.' });
     }
 
+    const payload = {
+        prompt,
+        uid,
+        system
+    };
+
+    // Only include `img` if an image is uploaded
+    if (img && typeof img === 'string' && img.startsWith('data:image')) {
+        payload.img = img;
+    }
+
     try {
-        const response = await axios.post('https://zaikyoov3-up.up.railway.app/api/anthropic-claude-3-7-sonnet', {
-            prompt,
-            uid,
-            img,
-            system
-        });
+        const response = await axios.post(
+            'https://zaikyoov3-up.up.railway.app/api/anthropic-claude-3-7-sonnet',
+            payload
+        );
 
         res.json({ reply: response.data.reply });
     } catch (err) {
