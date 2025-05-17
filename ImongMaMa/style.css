@@ -375,3 +375,25 @@ input:checked + .slider:before {
     border: 1px solid #ccc;
     padding: 3px;
 }
+.footer-top {
+  margin-bottom: 8px;
+}
+
+.footer-bottom {
+  display: flex;
+  gap: 10px;
+}
+
+.model-select {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+body.dark-mode .model-select {
+  background-color: #2c2c2c;
+  color: #ddd;
+  border-color: #555;
+}
