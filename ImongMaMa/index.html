@@ -1,37 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImongMamaGPT</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ImongMamaGPT</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
 </head>
 <body>
-
-    <div class="chat-container">
-        <div class="chat-header">
-    ImongMamaGPT
-    <label class="switch">
-        <input type="checkbox" id="darkModeToggle">
+  <div class="chat-container">
+    <div class="chat-header">
+      ImongMamaGPT
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle" />
         <span class="slider round"></span>
-    </label>
-</div>
-        <div class="chat-body" id="chatBody">
-            <div class="chat-message bot">Kamusta black 🥷! I'm your public imongmamagpt assistant ready to answer your nonsense questions!</div>
-        </div>
-        <div class="chat-footer">
-            <select id="modelSelect" class="form-select" style="margin-bottom: 10px;">
-    <option disabled selected>Select Model</option>
-            </select>
-            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message...">
-            <button class="chat-send-btn btn btn-primary" onclick="sendMessage()">Send</button>
-        </div>
+      </label>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="index.js"></script>
+    <div class="chat-body" id="chatBody">
+      <div class="chat-message bot">
+        Kamusta black 🥷! I'm your public imongmamagpt assistant ready to answer your nonsense questions!
+      </div>
+    </div>
 
+    <div class="chat-footer">
+      <div class="footer-top">
+        <select id="modelSelect" class="model-select">
+          <option disabled selected>Select Model</option>
+        </select>
+      </div>
+      <div class="footer-bottom">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." />
+        <button class="chat-send-btn btn btn-primary" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>
