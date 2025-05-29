@@ -309,3 +309,63 @@ body.dark-mode .copy-chat-btn {
 body.dark-mode .copy-chat-btn:hover {
     color: #fff;
 }
+
+/* Image bubble styles */
+.image-bubble-box {
+    border: 2px solid #dadada;
+    border-radius: 10px;
+    background: #fff;
+    margin-bottom: 10px;
+    padding: 8px 8px 8px 8px;
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.image-bubble-box img {
+    display: block;
+    max-width: 260px;
+    max-height: 260px;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 7px;
+    background: #f4f4f4;
+    object-fit: contain;
+}
+
+.download-image-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #0078d4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.09);
+}
+
+.download-image-btn:hover {
+    background: #0056a0;
+}
+
+/* For dark mode */
+body.dark-mode .image-bubble-box {
+    background: #222;
+    border-color: #444;
+}
+body.dark-mode .image-bubble-box img {
+    background: #222;
+}
+body.dark-mode .download-image-btn {
+    background: #0d6efd;
+}
+body.dark-mode .download-image-btn:hover {
+    background: #0b5ed7;
+}
