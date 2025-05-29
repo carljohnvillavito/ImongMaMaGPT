@@ -39,8 +39,13 @@ function sendMessage() {
     })
         .then(response => {
             typing.remove();
-            let reply = response.data.answer || 'Wala kong sagot.';
-            appendMessage(reply, 'bot');
+            if (typeof response.data === 'object' && response.data.images && response.data.images.length > 0) {
+                appendBotMessageWithImage(response.data);
+            } else {
+                // fallback: standard
+                let reply = response.data.answer || response.data || 'Wala kong sagot.';
+                appendMessage(reply, 'bot');
+            }
         })
         .catch(error => {
             typing.remove();
@@ -50,6 +55,90 @@ function sendMessage() {
         .finally(() => {
             chatInput.disabled = false;
             chatInput.focus();
+        });
+}
+
+function appendBotMessageWithImage(data) {
+    // data.images is an array, data.answer is the markdown (with ![](...)), data.answer may have text after the image
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('chat-message', 'bot');
+
+    // Support for multiple images if ever
+    data.images.forEach((img, idx) => {
+        const imageBox = document.createElement('div');
+        imageBox.className = 'image-bubble-box';
+
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'download-image-btn';
+        downloadBtn.innerText = 'Download';
+        downloadBtn.title = 'Download image as .jpeg';
+        downloadBtn.onclick = (e) => {
+            e.stopPropagation();
+            handleImageDownload(img.url, `imongmama-image-${Date.now()}.jpeg`);
+        };
+
+        const image = document.createElement('img');
+        image.src = img.url;
+        image.alt = img.description || "Generated Image";
+
+        imageBox.appendChild(downloadBtn);
+        imageBox.appendChild(image);
+
+        // Optional: description/caption
+        if (img.description) {
+            const caption = document.createElement('div');
+            caption.style.marginTop = '6px';
+            caption.style.fontSize = '0.93em';
+            caption.style.color = '#555';
+            caption.innerText = img.description;
+            imageBox.appendChild(caption);
+        }
+
+        messageDiv.appendChild(imageBox);
+    });
+
+    // Display the rest of the bot's text answer (if any), after the image
+    // Remove the image markdown from answer, show the rest
+    let remainingText = '';
+    if (data.answer) {
+        // Remove all ![...](url) markdown from answer
+        remainingText = data.answer.replace(/!\[.*?\]\(.*?\)/g, '').trim();
+    }
+    if (remainingText) {
+        const textDiv = document.createElement('div');
+        textDiv.innerHTML = formatMessage(remainingText);
+        textDiv.style.marginTop = '10px';
+        messageDiv.appendChild(textDiv);
+    }
+
+    const timestamp = document.createElement('time');
+    const now = new Date();
+    timestamp.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    messageDiv.appendChild(timestamp);
+
+    chatBody.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// Ensures downloaded file is .jpeg (or fallback .jpg), even if the URL doesn't have an extension
+function handleImageDownload(url, filename) {
+    fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            // fix for Safari/iOS: must create a link and click
+            const a = document.createElement('a');
+            const urlObj = window.URL.createObjectURL(blob);
+            a.href = urlObj;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(urlObj);
+            }, 0);
+        })
+        .catch(() => {
+            alert('Failed to download image.');
         });
 }
 
