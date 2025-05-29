@@ -19,38 +19,25 @@ app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, 'ImongMaMa', 'index.html'));
 });
 
-// Fixed proxy with conditional image + debug
+// Main chatbot proxy to new API (no model/image logic, only prompt, uid, and system prompt)
 app.post('/api/ask', async (req, res) => {
-    const { prompt, uid, img, system } = req.body;
+    const { prompt, uid, system } = req.body;
 
     if (!prompt || !uid || !system) {
         return res.status(400).json({ error: 'Missing prompt, uid, or system' });
     }
 
-    const payload = { prompt, uid, system };
-    if (img && img.startsWith('data:image')) {
-        payload.img = img;
-    }
-
     try {
-        console.log('[Proxy] Sending payload to Claude API:', payload);
+        const apiUrl = `https://haji-mix-api.gleeze.com/api/gpt4o?ask=${encodeURIComponent(prompt)}&uid=${encodeURIComponent(uid)}&roleplay=${encodeURIComponent(system)}&api_key=12c8883f30b463857aabb5a76a9a4ce421a6497b580a347bdaf7666dc2191e25`;
 
-        const response = await axios.post(
-            'https://zaikyoov3-up.up.railway.app/api/anthropic-claude-3-7-sonnet',
-            payload,
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
+        const response = await axios.get(apiUrl);
 
-        console.log('[Proxy] Received response:', response.data);
-        res.json({ reply: response.data.reply });
+        // Your API returns: { user_ask: "...", answer: "..." }
+        res.json({ answer: response.data.answer || "No response received." });
     } catch (error) {
         console.error('Proxy error:', error.response?.status, error.response?.data || error.message);
         res.status(500).json({
-            error: 'Proxy failed to reach Claude API',
+            error: 'Proxy failed to reach main API',
             status: error.response?.status || 500,
             message: error.response?.data || error.message
         });
