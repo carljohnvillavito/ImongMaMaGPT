@@ -98,3 +98,11 @@ function formatMessage(text) {
 chatInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') sendMessage();
 });
+
+// Optional: dark mode toggle handler
+const darkModeToggle = document.getElementById('darkModeToggle');
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+    });
+}
